@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "datagate"
+
+store = Store.new
+store.load
+
+ARGF.each_line.with_index do |line, index|
+  if index > 0
+    store.import(line.chomp)
+  end
+end
+
+store.dump
