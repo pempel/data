@@ -56,9 +56,11 @@ module Datagate
             patterns = [pattern_with_quotes, pattern_without_quotes]
             patterns.each do |pattern|
               if result.match?(pattern)
-                new_name = "record[\"#{name.downcase}\"]"
-                new_value = Store::Record.to_param(name, "\\1")
-                result = result.gsub(pattern, "#{new_name} == #{new_value}")
+                result = result.gsub(pattern) do |match|
+                  new_name = "record[\"#{name.downcase}\"]"
+                  new_value = Store::Record.to_param(name, $1)
+                  "#{new_name} == #{new_value}"
+                end
               end
             end
             result

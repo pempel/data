@@ -7,18 +7,18 @@ require "optparse"
 value, filter, order = [nil, nil, nil]
 
 OptionParser.new do |parser|
-  description = "For example, PROJECT,SHOT,VERSION,STATUS"
-  parser.on("-s", "--select COL_NAME_1,COL_NAME_2,...", description) do |v|
+  description = "For example, \"PROJECT,SHOT,VERSION,STATUS\""
+  parser.on("-s", "--select COLUMN_NAME_1,...", description) do |v|
     value = v
   end
 
-  description = "For example, PROJECT='the hobbit' AND (SHOT=01 OR SHOT=40)"
+  description = "For example, \"PROJECT='the hobbit' AND (SHOT=01 OR SHOT=40)\""
   parser.on("-f", "--filter EXPRESSION", description) do |v|
     filter = v
   end
 
-  description = "For example, FINISH_DATE,INTERNAL_BID"
-  parser.on("-o", "--order COL_NAME_1,COL_NAME_2,...", description) do |v|
+  description = "For example, \"FINISH_DATE,INTERNAL_BID\""
+  parser.on("-o", "--order COLUMN_NAME_1,...", description) do |v|
     order = v
   end
 end.parse!

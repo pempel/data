@@ -51,6 +51,15 @@ RSpec.describe Datagate::Select do
     end
 
     context "with the FILTER clause" do
+      it "works if the clause includes an integer value" do
+        filter = "id = 1"
+        statement = described_class.new("id,project", filter: filter)
+
+        result = statement.execute
+
+        expect(result.to_s).to eq("1,the hobbit")
+      end
+
       it "works if the clause includes an unquoted value" do
         filter = " FINISH_DATE  =  2006-07-22   "
         statement = described_class.new("id,project,finish_date", filter: filter)
@@ -60,7 +69,7 @@ RSpec.describe Datagate::Select do
         expect(result.to_s).to eq("3,king kong,2006-07-22")
       end
 
-      it "works if the clause includes an unquoted and a quoted value" do
+      it "works if the clause includes an unquoted and a quoted value for the same column" do
         filter = "  PROJECT=\"the hobbit\"  OR   PROJECT    =  lotr  "
         statement = described_class.new("id,project,internal_bid", filter: filter)
 
