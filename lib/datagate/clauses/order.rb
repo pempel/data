@@ -1,16 +1,11 @@
+require_relative "base"
+
 module Datagate
   module Clauses
-    class Order
-      attr_reader :error
-
-      def initialize(value = nil)
-        @value = value.to_s.strip
-        @error = nil
-      end
-
+    class Order < Base
       def valid?
         column_names.each do |column_name|
-          unless Store.new.has_column?(column_name)
+          unless Store.has_column?(column_name)
             @error = "unknown column \"#{column_name}\" in the ORDER clause"
             return false
           end
@@ -18,12 +13,8 @@ module Datagate
         true
       end
 
-      def invalid?
-        !valid?
-      end
-
       def apply(records = [])
-        invalid? ? records : records.sort_by { |r| column_values(r) }
+        valid? ? records.sort_by { |r| column_values(r) } : records
       end
 
       private
@@ -34,7 +25,7 @@ module Datagate
 
       def column_values(record)
         column_names.map do |column_name|
-          eval("record[column_name.to_s.downcase]")
+          eval("record[column_name.downcase]")
         end
       end
     end

@@ -1,5 +1,5 @@
 module Datagate
-  class ResultSet
+  class Result
     attr_accessor :rows, :error
 
     def initialize(rows = [], error = nil)

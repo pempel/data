@@ -18,7 +18,7 @@ RSpec.describe Datagate::Store do
       })
     end
 
-    it "overwrites the same logical data (PROJECT + SHOT + VERSION)" do
+    it "overwrites the earlier records with the same logical ones" do
       store = described_class.new
       line_1 = "king kong|42|128|scheduled|2006-07-22|45.00|2006-08-04 07:22"
       line_2 = "lotr|03|16|finished|2001-05-15|15.00|2001-04-01 06:30"

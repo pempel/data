@@ -9,14 +9,14 @@ module Datagate
       Record.members.map { |m| m.upcase.to_s }
     end
 
+    def self.has_column?(name)
+      column_names.include?(name.to_s.upcase)
+    end
+
     def initialize(file_path: "store.csv", file_col_sep: "|")
       @file_path = file_path
       @file_col_sep = file_col_sep
       @records = []
-    end
-
-    def has_column?(name)
-      self.class.column_names.include?(name.to_s.upcase)
     end
 
     def import(line)
