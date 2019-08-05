@@ -4,6 +4,12 @@ module Datagate
   module Clauses
     class Filter < Base
       def valid?
+        column_names.each do |column_name|
+          unless Store.has_column?(column_name)
+            @error = "unknown column \"#{column_name}\" in the FILTER clause"
+            return false
+          end
+        end
         record = Store::Record.new(
           "1",
           "the hobbit",
@@ -28,6 +34,19 @@ module Datagate
       end
 
       private
+
+      def column_names
+        @_column_names ||= begin
+          @value
+            .gsub(/ AND /i, " ")
+            .gsub(/ OR /i, " ")
+            .gsub("(", "")
+            .gsub(")", "")
+            .gsub(/[ ]*=[ ]*/i, "=")
+            .scan(/([^ ]*)=[^ ]*/)
+            .flatten
+        end
+      end
 
       def filter_criteria
         @_filter_criteria ||= begin

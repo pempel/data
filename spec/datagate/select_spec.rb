@@ -93,6 +93,17 @@ RSpec.describe Datagate::Select do
 
         expect(result.to_s).to eq("ERROR: syntax error in the FILTER clause")
       end
+
+      it "works if the clause includes an unknown column" do
+        filter = "  PROJECT ='the hobbit' AND XXX = 40"
+        statement = described_class.new("id,project,shot", filter: filter)
+
+        result = statement.execute
+
+        expect(result.to_s).to eq(
+          "ERROR: unknown column \"XXX\" in the FILTER clause"
+        )
+      end
     end
   end
 end
