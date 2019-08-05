@@ -24,7 +24,7 @@ Import data from a file into the data store:
 
     $ cat sample.csv | exe/import
 
-Select some data:
+Execute simple queries against the data store:
 
     $ exe/query -h
 
@@ -32,6 +32,8 @@ Select some data:
         -s, --select COLUMN_NAME_1,...   For example, "PROJECT,SHOT,VERSION,STATUS"
         -f, --filter EXPRESSION          For example, "PROJECT='the hobbit' AND (SHOT=01 OR SHOT=40)"
         -o, --order COLUMN_NAME_1,...    For example, "FINISH_DATE,INTERNAL_BID"
+
+Select data from the data store:
 
     $ exe/query -s PROJECT,SHOT,VERSION,STATUS -o FINISH_DATE,INTERNAL_BID
 
@@ -43,6 +45,8 @@ Select some data:
     $ exe/query -s PROJECT,SHOT,VERSION,STATUS -f FINISH_DATE=2006-07-22
 
     king kong,42,128,not required
+
+Filter data using boolean expressions:
 
     $ exe/query -s PROJECT,INTERNAL_BID -f 'PROJECT="the hobbit" OR PROJECT="lotr"'
 
