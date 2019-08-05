@@ -1,12 +1,9 @@
-require "tempfile"
-
-RSpec.describe Store do
+RSpec.describe Datagate::Store do
   context "#import" do
     it "imports data into the store" do
       store = described_class.new
-      line = "the hobbit|01|64|scheduled|2010-05-15|45.00|2010-04-01 13:35"
 
-      store.import(line)
+      store.import("the hobbit|01|64|scheduled|2010-05-15|45.00|2010-04-01 13:35")
 
       expect(store.records.count).to eq(1)
       expect(store.records[0].to_h).to include({
@@ -56,24 +53,12 @@ RSpec.describe Store do
   end
 
   context "#load" do
-    let(:store_file) do
-      Tempfile.new("store.csv").tap do |f|
-        f << "ID|PROJECT|SHOT|VERSION|STATUS|FINISH_DATE|INTERNAL_BID|CREATED_DATE\n"
-        f << "1|the hobbit|01|64|scheduled|2010-05-15|45.00|2010-04-01 13:35\n"
-        f.close
-      end
-    end
-
-    after(:each) do
-      store_file.unlink
-    end
+    include_context "store"
 
     it "loads all data from a file" do
-      store = described_class.new(file_path: store_file.path)
-
       store.load
 
-      expect(store.records.count).to eq(1)
+      expect(store.records.count).to eq(4)
       expect(store.records[0].to_h).to include({
         id: 1,
         project: "the hobbit",
@@ -84,23 +69,24 @@ RSpec.describe Store do
         internal_bid: 45.0,
         created_date: "2010-04-01 13:35"
       })
+      expect(store.records[1].to_h).to include({
+        id: 2,
+        project: "lotr",
+        shot: "03",
+        version: 16,
+        status: "finished",
+        finish_date: "2001-05-15",
+        internal_bid: 15.0,
+        created_date: "2001-04-01 06:47"
+      })
     end
   end
 
   context "#dump" do
-    let(:store_file) do
-      Tempfile.new("store.csv")
-    end
-
-    after(:each) do
-      store_file.unlink
-    end
+    include_context "empty store"
 
     it "dumps all data into a file" do
-      store = described_class.new(file_path: store_file.path)
-      line = "the hobbit|01|64|scheduled|2010-05-15|45.00|2010-04-01 13:35"
-
-      store.import(line)
+      store.import("the hobbit|01|64|scheduled|2010-05-15|45.00|2010-04-01 13:35")
       store.dump
 
       expect(store_file.read).to eq(
